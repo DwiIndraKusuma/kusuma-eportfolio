@@ -92,3 +92,58 @@ navLinks.forEach(a => {
     a.style.color = a.getAttribute('href') === '#'+current ? '#F3FE00' : '';
 });
 });
+
+/* ══════════════════════════════════════════
+    LOADER LOGIC
+══════════════════════════════════════════ */
+(function() {
+const loader  = document.getElementById('loader');
+const bar     = document.getElementById('loader-bar');
+const pct     = document.getElementById('loader-pct');
+const wipe    = document.getElementById('loader-wipe');
+
+// inject a dynamic <style> to control ::after clip-path
+const fillStyle = document.createElement('style');
+fillStyle.id = 'loader-fill-style';
+fillStyle.textContent = '.loader-name::after { clip-path: inset(0 100% 0 0); }';
+document.head.appendChild(fillStyle);
+
+document.body.classList.add('loading');
+
+let progress = 0;
+const duration = 2400;
+const startTime = performance.now();
+
+function easeOutExpo(t) {
+    return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
+}
+
+function tick(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed / duration, 1);
+    progress = Math.round(easeOutExpo(t) * 100);
+
+    // progress bar + counter
+    bar.style.width = progress + '%';
+    pct.textContent = progress + '%';
+
+    // fill name text left-to-right
+    const remaining = 100 - progress;
+    fillStyle.textContent = `.loader-name::after { clip-path: inset(0 ${remaining}% 0 0); }`;
+
+    if (t < 1) {
+    requestAnimationFrame(tick);
+    } else {
+    // done — wipe transition
+    setTimeout(() => {
+        wipe.classList.add('go');
+        setTimeout(() => {
+        loader.style.display = 'none';
+        document.body.classList.remove('loading');
+        }, 700);
+    }, 250);
+    }
+}
+
+requestAnimationFrame(tick);
+})();
