@@ -33,7 +33,7 @@ tpl.remove();
 });
 
 /* ── Hero typewriter ────────────────── */
-const phrases = ['& IT Analyst', '& Data Engineer', '& Problem Solver'];
+const phrases = ['& IT Analyst', '& AI Engineer', '& Problem Solver'];
 let pi = 0, ci = 0, deleting = false;
 const typed = document.getElementById('hero-typed');
 function type() {
